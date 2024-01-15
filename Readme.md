@@ -20,3 +20,11 @@ You can install it by this:
 
 cpan Switch, Cwd, Json::XS, File::Slurp, Filter::Crypto::CryptFile
 
+## Testing
+
+If you would like to improve this tool and write more tests you have to also install these modules: 
+
+`Test::Most` 
+`Test::Output` 
+`Test::MockModule`
+`Test::MockObject`
