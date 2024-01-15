@@ -14,7 +14,9 @@ It's needed to install the following modules before running the script:
 - Cwd
 - JSON::XS
 - File::Slurp
+- Filter::Crypto::CryptFile
 
 You can install it by this:
 
-cpan Switch, Cwd, Json::XS, File::Slurp
+cpan Switch, Cwd, Json::XS, File::Slurp, Filter::Crypto::CryptFile
+
