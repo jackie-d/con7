@@ -91,6 +91,44 @@ sub decrypt {
 
 ####
 
+sub openWithDefaultApp() {
+    my $file = @ARGV[1] // shift;
+
+    if ( ! -e $file ) {
+        print "Can't open: file not found\n";
+        exit;
+    }
+
+    $command = getCommandToOpenFile($file);
+    
+    system($command);
+}
+
+sub getCommandToOpenFile {
+    my $file = shift;
+
+    my $os = getCurrentOS();
+    my $command;
+    if ( $os =~ 'Win32' ) {
+        my $isDirectory = isDirectory($file);
+        $command = $isDirectory ? 'explorer' : 'start';
+    } else { #linux
+        $command = 'xdg-open';
+    }
+    return "$command $file";
+}
+
+sub getCurrentOS {
+    return "$^O\n";
+}
+
+sub isDirectory {
+    my $file = shift;
+    return (-d $file);
+}
+
+####
+
 sub getPathFromName {
     my $name = shift;
     if ( ! -e $LINKS ) {
@@ -116,5 +154,3 @@ sub setPathForName {
     my $json = encode_json \%hash;
     write_file($LINKS, { binmode => ':raw' }, $json);
 }
-
-1;

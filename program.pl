@@ -9,7 +9,7 @@ require 'Con7.pm';
 my $firstArgument = $ARGV[0];
 
 if (-e $firstArgument) {
-    #handleFile($firstArgument);
+    Con7::openWithDefaultApp($firstArgument);
     exit; 
 }
 
@@ -23,5 +23,6 @@ switch( $command ) {
     case 'unzip' { Con7->unzip(); }
     case 'crypt' { Con7->cryptFile(); }
     case 'decrypt' { Con7->decrypt(); }
+    case 'open' { Con7->openWithDefaultApp(); }
     else { print "Command not found\n"; }
 }

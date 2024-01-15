@@ -18,7 +18,18 @@ It's needed to install the following modules before running the script:
 
 You can install it by this:
 
-cpan Switch, Cwd, Json::XS, File::Slurp, Filter::Crypto::CryptFile
+`cpan Switch, Cwd, Json::XS, File::Slurp, Filter::Crypto::CryptFile`
+
+or by ActiveState
+
+```
+state install Switch
+state install Cwd
+state install Json-XS
+state install File-Slurp
+...
+```
+
 
 ## Testing
 
