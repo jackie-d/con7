@@ -30,6 +30,10 @@ state install File-Slurp
 ...
 ```
 
+or by cpanfile
+
+`cpanm --installdeps .`
+
 
 ## Testing
 
