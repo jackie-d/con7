@@ -24,5 +24,15 @@ switch( $command ) {
     case 'crypt' { Con7->cryptFile(); }
     case 'decrypt' { Con7->decrypt(); }
     case 'open' { Con7->openWithDefaultApp(); }
-    else { print "Command not found\n"; }
+    case 'launch' { Con7->openProgram(); }
+    case 'shutdown' { Con7->shutdown(); }
+    case 'restart' { Con7->restart(); }
+    else { tryLaunch(); }
+}
+
+sub tryLaunch {
+    $isLaunchDone = Con7::launchProgram(@ARGV[0]);
+    if ( ! $isLaunchDone ) {
+        print "Command not found\n";
+    }
 }

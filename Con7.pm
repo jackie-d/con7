@@ -5,7 +5,7 @@ use JSON::XS qw(encode_json decode_json);
 use File::Slurp qw(read_file write_file);
 use IO::Compress::Zip ();
 use IO::Uncompress::Unzip ();
-use Filter::Crypto::CryptFile qw(:DEFAULT $ErrStr);
+#use Filter::Crypto::CryptFile qw(:DEFAULT $ErrStr);
 
 my $LINKS = './storagefile-links';
 my $NOTE = './storagefile-note';
@@ -125,6 +125,53 @@ sub getCurrentOS {
 sub isDirectory {
     my $file = shift;
     return (-d $file);
+}
+
+####
+
+sub openProgram {
+    if ( getCurrentOS() == 'Win32' ) {
+        $isLaunchDone = launchProgram(@ARGV[1]);
+        if ( !$isLaunchDone ) {
+            print "Can't launch: program not found\n";
+        }
+    } else {
+        # TODO
+    }
+}
+
+sub launchProgram {
+    return openProgramWin(shift);
+}
+
+sub shutdown {
+    if ( getCurrentOS() == 'Win32' ) {
+        system("shutdown /s");
+    } else {
+        system("shutdown");
+    }
+}
+
+sub restart {
+    if ( getCurrentOS() == 'Win32' ) {
+        system("shutdown /r");
+    } else {
+        system("sudo reboot");
+    }
+}
+
+sub openProgramWin {
+    my $program = shift;
+    # TODO add fallback to %programfiles(x86)%
+    $command = 'cd "%programfiles%" && dir /b /s *.exe | findstr /R "\\' . $program . '[a-z]*\.exe"';
+    @output = `$command`;
+    if ( @output == 0 ) {
+        return 0;
+    }
+    $exePath = @output[0];
+    $exePath =~ s/\s+$//;
+    exec('"' . $exePath . '"');
+    1;
 }
 
 ####

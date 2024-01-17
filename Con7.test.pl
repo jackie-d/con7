@@ -1,6 +1,9 @@
-use Test::Most tests => 6;
+use Test::Most tests => 8;
 use Test::MockModule;
 use Test::Output;
+
+our $overrideSystem = sub { };
+use Test::Mock::Cmd sub { $overrideSystem->(@_) };
 
 use FindBin qw( $RealBin ); 
 use lib $RealBin;
@@ -92,4 +95,27 @@ do {
     });
 
     1;
+};
+
+# Test program commands
+
+do {
+
+    local $overrideSystem = sub {
+        # don't print
+    };
+    my $isLaunched = Con7::openProgramWin('ANY');
+    is $isLaunched, 0, 'It fails with no program found.';
+
+    $overrideSystem = sub {
+        print 'C:/any.exe';
+    };
+    my $str;
+    open my $fh, '>', \$str;
+    {
+        local *STDOUT = $fh;
+        $isLaunched = Con7::openProgramWin('ANY');
+    }
+    is $isLaunched, 1, 'It succeed with program found.';
+
 };

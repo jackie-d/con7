@@ -43,3 +43,4 @@ If you would like to improve this tool and write more tests you have to also ins
 `Test::Output` 
 `Test::MockModule`
 `Test::MockObject`
+`Test::Mock::Cmd`
