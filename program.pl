@@ -27,6 +27,9 @@ switch( $command ) {
     case 'launch' { Con7->openProgram(); }
     case 'shutdown' { Con7->shutdown(); }
     case 'restart' { Con7->restart(); }
+    case 'uphistory' { Con7->saveHistory(); }
+    case 'myhistory' { Con7->reloadHistory(); }
+    case 'myenv' { Con7->reloadEnv(); }
     else { tryLaunch(); }
 }
 

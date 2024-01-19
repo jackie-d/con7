@@ -15,6 +15,7 @@ my $NOTE = './storagefile-note';
 sub go {
     my $where = $ARGV[1];
     my $path = getPathFromName($where);
+    # TODO inject in shell
     print("cd $path");
     print "\n";
 }
@@ -24,6 +25,32 @@ sub goset {
     my $where = $ARGV[2] // getcwd;
     setPathForName($name, $where);
     print "New path link saved.\n";
+}
+
+sub getPathFromName {
+    my $name = shift;
+    if ( ! -e $LINKS ) {
+        return;
+    }
+    my $json = read_file($LINKS, { binmode => ':raw' });
+    my %hash = %{ decode_json($json) };
+    return $hash{$name};
+}
+
+sub setPathForName {
+    my $name = shift;
+    my $where = shift;
+
+    my %hash;
+    if ( -e $LINKS ) {
+        my $json = read_file($LINKS, { binmode => ':raw' });
+        %hash = %{ decode_json($json) };
+    }
+
+    $hash{$name} = $where;
+    
+    my $json = encode_json \%hash;
+    write_file($LINKS, { binmode => ':raw' }, $json);
 }
 
 ####
@@ -38,7 +65,7 @@ sub note {
     }
 
     my @a;
-    $a[0] = $text;
+    push @a, $text;
     while (<STDIN>) {
         /\S/ or last; # last line if empty
         push @a, $_;
@@ -130,7 +157,7 @@ sub isDirectory {
 ####
 
 sub openProgram {
-    if ( getCurrentOS() == 'Win32' ) {
+    if ( getCurrentOS() =~ 'Win32' ) {
         $isLaunchDone = launchProgram(@ARGV[1]);
         if ( !$isLaunchDone ) {
             print "Can't launch: program not found\n";
@@ -145,7 +172,7 @@ sub launchProgram {
 }
 
 sub shutdown {
-    if ( getCurrentOS() == 'Win32' ) {
+    if ( getCurrentOS() =~ 'Win32' ) {
         system("shutdown /s");
     } else {
         system("shutdown");
@@ -153,7 +180,7 @@ sub shutdown {
 }
 
 sub restart {
-    if ( getCurrentOS() == 'Win32' ) {
+    if ( getCurrentOS() =~ 'Win32' ) {
         system("shutdown /r");
     } else {
         system("sudo reboot");
@@ -176,28 +203,27 @@ sub openProgramWin {
 
 ####
 
-sub getPathFromName {
-    my $name = shift;
-    if ( ! -e $LINKS ) {
-        return;
+sub saveHistory {
+    if ( getCurrentOS() =~ 'Linux' ) {
+        # TODO inject in shell
+        print('history -a');
     }
-    my $json = read_file($LINKS, { binmode => ':raw' });
-    my %hash = %{ decode_json($json) };
-    return $hash{$name};
 }
 
-sub setPathForName {
-    my $name = shift;
-    my $where = shift;
-
-    my %hash;
-    if ( -e $LINKS ) {
-        my $json = read_file($LINKS, { binmode => ':raw' });
-        %hash = %{ decode_json($json) };
+sub reloadHistory {
+    if ( getCurrentOS() =~ 'Linux' ) {
+        # TODO inject in shell
+        print('history -r');
     }
+}
 
-    $hash{$name} = $where;
-    
-    my $json = encode_json \%hash;
-    write_file($LINKS, { binmode => ':raw' }, $json);
+sub reloadEnv {
+    if ( getCurrentOS() =~ 'Linux' ) {
+        # TODO inject in shell
+        print('source ~/.bashrc');
+    } elsif ( getCurrentOS() =~ 'Win32' ) {
+        # TODO inject in shell
+        print('$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ');
+        # TODO cmd
+    }
 }
