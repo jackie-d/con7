@@ -30,12 +30,20 @@ switch( $command ) {
     case 'uphistory' { Con7->saveHistory(); }
     case 'myhistory' { Con7->reloadHistory(); }
     case 'myenv' { Con7->reloadEnv(); }
+    case 'new' { Con7->newConsole(); }
+    case 'web' { Con7->openWebPage(); }
+    case 'todo' { Con7->todo(); }
     else { tryLaunch(); }
 }
 
 sub tryLaunch {
     $isLaunchDone = Con7::launchProgram(@ARGV[0]);
-    if ( ! $isLaunchDone ) {
-        print "Command not found\n";
+    if ( $isLaunchDone ) {
+        exit;
     }
+    if ( rindex($ARGV[0], "http://", 0) == 0 || rindex($ARGV[0], "https://", 0) == 0  ) {
+        Con7::openWebPage(@ARGV[0]);
+        exit;
+    }
+    print "Command not found\n";
 }

@@ -9,6 +9,7 @@ use IO::Uncompress::Unzip ();
 
 my $LINKS = './storagefile-links';
 my $NOTE = './storagefile-note';
+my $TODOS = './storagefile-todos';
 
 ##
 
@@ -65,7 +66,8 @@ sub note {
     }
 
     my @a;
-    push @a, $text;
+    @a[0] = '';
+    @a[1] = $text;
     while (<STDIN>) {
         /\S/ or last; # last line if empty
         push @a, $_;
@@ -226,4 +228,71 @@ sub reloadEnv {
         print('$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ');
         # TODO cmd
     }
+}
+
+sub newConsole {
+        if ( getCurrentOS() =~ 'Linux' ) {
+        exec('x-terminal-emulator');
+    } elsif ( getCurrentOS() =~ 'Win32' ) {
+        exec('start cmd');
+        # TODO PS
+    }
+}
+
+sub openWebPage {
+    $url = @ARGV[1] // shift;
+    if ( getCurrentOS() =~ 'Linux' ) {
+        exec("xdg-open $url");
+    } elsif ( getCurrentOS() =~ 'Win32' ) {
+        exec("rundll32 url.dll,FileProtocolHandler $url");
+    }
+}
+
+####
+
+## DRAFT
+sub todo {
+    if ( @ARGV[1] =~ 'add' ) {
+        addTodo();
+    } elsif ( @ARGV[1] =~ 'list' ) {
+        listTodos();
+    } elsif ( @ARGV[1] =~ 'next' ) {
+        nextTodo();
+    } else {
+        print "Select the todo operation (add, list, next)\n"
+    }
+}
+
+sub addTodo {
+    my $text = '';
+    if ( -e $TODOS ) {
+        $text = read_file($TODOS, { binmode => ':raw' });
+    }
+
+    $text = $text . "\n- " . @ARGV[2];
+    
+    write_file($TODOS, { binmode => ':raw' }, $text );
+}
+
+sub listTodos {
+    if ( -e $TODOS ) {
+        my $text = read_file($TODOS, { binmode => ':raw' });
+        print $text;
+    }
+}
+
+# Add support for indexed removal
+sub nextTodo {
+    my $text;
+    if ( -e $TODOS ) {
+        $text = read_file($TODOS, { binmode => ':raw' });
+    } else {
+        exit;
+    }
+
+    my @lines = split ( "\n", $text );
+    print @lines[1];
+    $content = join ("\n", @lines[0,2..$#lines] );
+
+    write_file($TODOS, { binmode => ':raw' }, $content );
 }
