@@ -226,6 +226,7 @@ sub reloadEnv {
     } elsif ( getCurrentOS() =~ 'Win32' ) {
         # TODO inject in shell
         print('$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User") ');
+        # TODO others sys vars
         # TODO cmd
     }
 }

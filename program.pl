@@ -47,3 +47,7 @@ sub tryLaunch {
     }
     print "Command not found\n";
 }
+
+#note
+# for commands to be injected in current console the script have to be executed as i.e.
+# bash --rcfile <(/usr/bin/perl program.pl go c)
