@@ -206,21 +206,21 @@ sub openProgramWin {
 ####
 
 sub saveHistory {
-    if ( getCurrentOS() =~ 'Linux' ) {
+    if ( getCurrentOS() =~ 'linux' ) {
         # TODO inject in shell
         print('history -a');
     }
 }
 
 sub reloadHistory {
-    if ( getCurrentOS() =~ 'Linux' ) {
+    if ( getCurrentOS() =~ 'linux' ) {
         # TODO inject in shell
         print('history -r');
     }
 }
 
 sub reloadEnv {
-    if ( getCurrentOS() =~ 'Linux' ) {
+    if ( getCurrentOS() =~ 'linux' ) {
         # TODO inject in shell
         print('source ~/.bashrc');
     } elsif ( getCurrentOS() =~ 'Win32' ) {
@@ -232,7 +232,7 @@ sub reloadEnv {
 }
 
 sub newConsole {
-        if ( getCurrentOS() =~ 'Linux' ) {
+        if ( getCurrentOS() =~ 'linux' ) {
         exec('x-terminal-emulator');
     } elsif ( getCurrentOS() =~ 'Win32' ) {
         exec('start cmd');
@@ -242,7 +242,7 @@ sub newConsole {
 
 sub openWebPage {
     $url = @ARGV[1] // shift;
-    if ( getCurrentOS() =~ 'Linux' ) {
+    if ( getCurrentOS() =~ 'linux' ) {
         exec("xdg-open $url");
     } elsif ( getCurrentOS() =~ 'Win32' ) {
         exec("rundll32 url.dll,FileProtocolHandler $url");
@@ -251,7 +251,7 @@ sub openWebPage {
 
 ####
 
-## DRAFT
+
 sub todo {
     if ( @ARGV[1] =~ 'add' ) {
         addTodo();
@@ -282,7 +282,7 @@ sub listTodos {
     }
 }
 
-# Add support for indexed removal
+# TODO: Add support for indexed removal
 sub nextTodo {
     my $text;
     if ( -e $TODOS ) {
@@ -296,4 +296,32 @@ sub nextTodo {
     $content = join ("\n", @lines[0,2..$#lines] );
 
     write_file($TODOS, { binmode => ':raw' }, $content );
+}
+
+####
+
+sub tree {
+    if ( getCurrentOS() =~ 'linux' ) {
+        system('find . -not -path \'*/.*\' | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"');
+    } elsif ( getCurrentOS() =~ 'Win32' ) {
+        system("tree /F");
+        # TODO support cmd
+    }
+}
+
+sub showDisks {
+    $to = @ARGV[1];
+    if ( getCurrentOS() =~ 'linux' ) {
+        system("findmnt -D / | grep / && findmnt -D | grep /mnt/");
+    } elsif ( getCurrentOS() =~ 'Win32' ) {
+        system("powershell (Get-PSDrive).Name -match '^[a-z]\$'");
+        # TODO support cmd
+    }
+    if ( $to ) {
+        changeDisk($to);
+    }
+}
+
+sub changeDisk {
+    # TODO
 }

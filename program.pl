@@ -33,6 +33,8 @@ switch( $command ) {
     case 'new' { Con7->newConsole(); }
     case 'web' { Con7->openWebPage(); }
     case 'todo' { Con7->todo(); }
+    case 'disk' { Con7->showDisks(); }
+    case 'tree' { Con7->tree(); }
     else { tryLaunch(); }
 }
 
