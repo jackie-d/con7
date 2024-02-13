@@ -6,6 +6,10 @@
 
 ## Requirements
 
+#### Install Perl
+
+Install Perl from ActiveState or from Strawberry Perl
+
 #### Modules
 
 It's needed to install the following modules before running the script:
@@ -44,3 +48,39 @@ If you would like to improve this tool and write more tests you have to also ins
 `Test::MockModule`
 `Test::MockObject`
 `Test::Mock::Cmd`
+
+## Usage
+
+`perl ./con7.pl <command> [args]`
+
+### Command lists
+
+- `go` \<shortcut_name>
+- `goset` \<shortcut_name> \[shortcut_path\]
+- `note`
+- `zip` \<filename> 
+- `unzip` \<filename>
+- `crypt` \<filename>
+- `decrypt` \<filename>
+- `open` \<filename>
+- `launch` \<program_name>
+- `shutdown`
+- `restart` 
+- `uphistory` 
+- `myhistory` 
+- `myenv`
+- `new`
+- `web` \<URL>
+- `todo` <add|list|next> \[content\]
+- `disk`
+- `tree`
+
+Currently `go`, `uphistory`, `myhistory`, `myenv` commands needs to copy-paste the output to new command by the user or to run as:
+
+*For linux*
+
+`bash --rcfile <(perl con7.pl go c)`
+
+*For windows*
+
+`perl con7.pl go c | iex`

@@ -16,9 +16,14 @@ my $TODOS = './storagefile-todos';
 sub go {
     my $where = $ARGV[1];
     my $path = getPathFromName($where);
+    if ( length($path) == 0 ) {
+        exit;
+    }
     # TODO inject in shell
-    print("cd $path");
-    print "\n";
+    print("cd '$path'");
+    # print "\n";
+    #exec('bash --rcfile <(cd /mnt/c/)');
+    #`bash -c 'bash --rcfile <(cd /mnt/c/)';
 }
 
 sub goset {
